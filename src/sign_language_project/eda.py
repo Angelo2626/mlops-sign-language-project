@@ -1,13 +1,13 @@
 import pandas as pd
-import numpy as np 
+import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
-import os 
+import os
 
 DATA_PATH = "data/"
 RESULTS_PATH = "results/eda/"
 TRAIN_FILE = os.path.join(DATA_PATH, "sign_mnist_train.csv")
-TEST_FILE = OS.PATH.JOIN(DATA_PATH, "sign_mnist_test.csv")
+TEST_FILE = os.path.join(DATA_PATH, "sign_mnist_test.csv")
 
 def run_eda():
     """
@@ -34,11 +34,10 @@ def run_eda():
     plt.xlabel('Etichetta (Lettera)')
     plt.ylabel('Conteggio')
     
-    # Salva il grafico
     distribution_plot_path = os.path.join(RESULTS_PATH, "class_distribution.png")
     plt.savefig(distribution_plot_path)
     print(f"Grafico della distribuzione delle classi salvato in: {distribution_plot_path}")
-    plt.close() 
+    plt.close()
     y_train = train_df['label']
     X_train = train_df.drop('label', axis=1)
 
@@ -60,6 +59,4 @@ def run_eda():
     print("--- EDA Completata ---")
 
 if __name__ == '__main__':
-    # Questo blocco viene eseguito solo se lo script è lanciato direttamente
     run_eda()
-    

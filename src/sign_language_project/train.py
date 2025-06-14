@@ -18,7 +18,7 @@ MODEL_NAME = "sign_language_cnn.pth"
 # Parametri di training
 LEARNING_RATE = 0.001
 BATCH_SIZE = 64
-EPOCHS = 10
+EPOCHS = 50
 
 def train_model():
     """Funzione principale per addestrare il modello."""

@@ -18,5 +18,5 @@ COPY ./results/models/sign_language_cnn.pth ./results/models/sign_language_cnn.p
 # Esponi la porta che Gradio usa di default
 EXPOSE 7860
 
-# Comando per lanciare l'app
-CMD ["python", "-m", "src.sign_language_project.app"]
+# Comando per lanciare l'app in modalità Docker
+CMD ["python", "-m", "src.sign_language_project.app", "--docker"]

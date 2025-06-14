@@ -80,3 +80,4 @@ Il workflow definito in `.github/workflows/ci.yml` automatizza l'intero processo
 L'immagine pubblicata è disponibile qui: `https://hub.docker.com/r/angelo2626/mlops-sign-language-project`
 
 ---
+Il modello attuale, addestrato per 50 epoche, mostra segni di overfitting quando testato su disegni a mano libera, che rappresentano un dominio di dati diverso rispetto al training set fotografico. Per migliorare l'accuratezza in un'applicazione reale, i passi successivi includerebbero l'implementazione di un validation set con early stopping, tecniche di data augmentation e un'analisi più approfondita degli iperparametri.

@@ -9,12 +9,12 @@ def test_model_output_shape():
     """
 
     model = SimpleCNN(num_classes=25)
-    
+
 
     dummy_input = torch.randn(4, 1, 28, 28)
-    
+
     output = model(dummy_input)
-    
+
     assert output.shape == (4, 25), f"Shape dell'output errata: {output.shape}, attesa (4, 25)"
 
 def test_model_forward_pass():

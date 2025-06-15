@@ -2,82 +2,60 @@
 
 Questo progetto implementa una pipeline MLOps completa per l'addestramento e il deployment di un classificatore di immagini per il dataset Sign Language MNIST. L'obiettivo è dimostrare le best practice di sviluppo software e automazione nel contesto del Machine Learning.
 
+Il progetto include un'interfaccia web interattiva costruita con Gradio per testare il modello disegnando direttamente nel browser.
+
 ## Struttura del Progetto
 
-Il progetto è organizzato seguendo una struttura standard per pacchetti Python:
-
--   `.github/workflows/`: Contiene i workflow di GitHub Actions per la CI/CD.
--   `data/`: (Locale, ignorata da git) Contiene i file CSV del dataset.
+-   `.github/workflows/`: Contiene il workflow di GitHub Actions per la CI/CD.
 -   `src/sign_language_project/`: Il codice sorgente del pacchetto Python.
-    -   `dataset.py`: Gestione del caricamento dati con `torch.utils.data.Dataset`.
-    -   `model.py`: Definizione dell'architettura della rete neurale convoluzionale (CNN).
-    -   `train.py`: Script per l'orchestrazione del training.
-    -   `eda.py`: Script per l'analisi esplorativa dei dati.
--   `tests/`: Contiene i test unitari per il progetto, eseguiti con `pytest`.
--   `Dockerfile`: Definisce l'ambiente containerizzato per il training.
--   `requirements.txt`: Elenca le dipendenze Python del progetto.
--   `pytest.ini`: File di configurazione per `pytest`.
+    -   `train.py`: Script per l'addestramento del modello.
+    -   `app.py`: Script per lanciare l'interfaccia web con Gradio.
+    -   `model.py` e `dataset.py`: Moduli per il modello e la gestione dati.
+-   `tests/`: Test unitari eseguiti con `pytest`.
+-   `Dockerfile`: Definisce l'ambiente per il **training**.
+-   `Dockerfile.app`: Definisce l'ambiente per l'**app Gradio**.
+-   `requirements.txt`: Elenca le dipendenze Python.
 
 ## Funzionalità e Tecnologie Utilizzate
 
--   **Controllo di Versione:** Git e GitHub per la gestione del codice e della collaborazione.
--   **Modello di Machine Learning:** Una Rete Neurale Convoluzionale (CNN) implementata con **PyTorch** per classificare le 25 lettere del linguaggio dei segni.
--   **Containerizzazione:** **Docker** per creare un ambiente di training isolato e riproducibile.
--   **Continuous Integration (CI):** **GitHub Actions** per l'automazione di:
-    -   **Linting** del codice con `pylint` per garantire la qualità e lo stile.
-    -   **Test Unitari** con `pytest` per verificare la correttezza del modello.
--   **Continuous Delivery (CD):** Il workflow CI/CD pubblica automaticamente l'immagine Docker su **Docker Hub** dopo che i test sono passati con successo.
+-   **Controllo di Versione:** Git e GitHub.
+-   **Modello di Machine Learning:** Una CNN implementata con **PyTorch**.
+-   **Containerizzazione:** **Docker** per creare ambienti isolati sia per il training che per l'inferenza.
+-   **Continuous Integration (CI):** **GitHub Actions** per l'automazione di linting (`pylint`) e test unitari (`pytest`).
+-   **Continuous Delivery (CD):** Il workflow CI/CD pubblica automaticamente le immagini Docker per il training e per l'app su **Docker Hub**.
+-   **Interfaccia Utente:** Un'applicazione web interattiva creata con **Gradio** per permettere la predizione in tempo reale.
 
 ## Come Eseguire il Progetto
 
 ### Prerequisiti
 
 -   Git
--   Python 3.11
--   Conda (consigliato per la gestione dell'ambiente)
 -   Docker Desktop
 
-### Esecuzione Locale
+### Eseguire l'Applicazione Interattiva (Metodo Consigliato)
 
-1.  Clonare la repository:
-    ```bash
-    git clone https://github.com/Angelo2626/mlops-sign-language-project.git
-    cd mlops-sign-language-project
-    ```
-2.  Creare e attivare l'ambiente virtuale:
-    ```bash
-    conda create --name mlops_project python=3.11
-    conda activate mlops_project
-    ```
-3.  Installare le dipendenze:
-    ```bash
-    pip install -r requirements.txt --extra-index-url https://download.pytorch.org/whl/cpu
-    ```
-4.  Scaricare il [dataset da Kaggle](https://www.kaggle.com/datasets/datamunge/sign-language-mnist) e posizionare i file `sign_mnist_train.csv` e `sign_mnist_test.csv` nella cartella `data/`.
+Il modo più semplice per testare il progetto è eseguire l'immagine Docker dell'applicazione, che è già stata pubblicata su Docker Hub e contiene il modello pre-addestrato.
 
-5.  Eseguire il training:
+1.  Esegui il seguente comando nel tuo terminale:
     ```bash
-    python -m src.sign_language_project.train
+    # Sostituisci angelo2626 con il tuo username di Docker Hub
+    docker run --rm -p 7860:7860 angelo2626/sign-language-app:latest
     ```
+2.  Apri il browser e vai su `http://localhost:7860`.
 
-### Esecuzione con Docker
+### Eseguire il Training da Zero
 
-1.  Costruire l'immagine Docker:
+1.  Clona la repository e naviga nella cartella.
+2.  Scarica il [dataset da Kaggle](https://www.kaggle.com/datasets/datamunge/sign-language-mnist) e posiziona i file CSV nella cartella `data/`.
+3.  Esegui il training all'interno di un container Docker. Questo comando mappa la cartella dei dati per la lettura e la cartella dei risultati per salvare il modello addestrato.
     ```bash
-    docker build -t sign-language-trainer .
-    ```
-2.  Eseguire il training all'interno del container. Il modello addestrato (`.pth`) verrà salvato nella cartella locale `results/models`.
-    ```bash
-    docker run --rm -v "${PWD}/results:/app/results" sign-language-trainer
+    docker run --rm -v "${PWD}/data:/app/data" -v "${PWD}/results:/app/results" angelo2626/sign-language-trainer:latest
     ```
 
 ## Pipeline CI/CD
 
-Il workflow definito in `.github/workflows/ci.yml` automatizza l'intero processo. Ad ogni `push` sul branch `main`, vengono eseguiti i seguenti job:
-1.  **Lint & Test:** Verifica la qualità del codice.
-2.  **Build and Push:** Se i test passano, l'immagine Docker viene costruita e pubblicata su Docker Hub.
-
-L'immagine pubblicata è disponibile qui: `https://hub.docker.com/r/angelo2626/mlops-sign-language-project`
+Il workflow in `.github/workflows/ci.yml` automatizza l'intero processo. Ad ogni `push` sul branch `main`:
+1.  **Test Job:** Esegue `pylint` e `pytest` per validare il codice.
+2.  **Build and Push Job:** Se i test passano, costruisce e pubblica le immagini `sign-language-trainer` e `sign-language-app` su Docker Hub.
 
 ---
-Il modello attuale, addestrato per 50 epoche, mostra segni di overfitting quando testato su disegni a mano libera, che rappresentano un dominio di dati diverso rispetto al training set fotografico. Per migliorare l'accuratezza in un'applicazione reale, i passi successivi includerebbero l'implementazione di un validation set con early stopping, tecniche di data augmentation e un'analisi più approfondita degli iperparametri.

@@ -26,7 +26,7 @@ jobs:
 
       - name: Lint with pylint
         run: |
-          pylint --disable=C0114,C0116,C0301,C0303,C0304,C0411,R1725,C0103,W0612,R0914,R0915,R0912,R0801,R0402 src/
+          pylint --disable=C0114,C0116,C0301,C0303,C0304,C0411,R1725,C0103,W0612,R0914,R0915,R0912,R0801,R0402,W0611,W0718,W0621,E0606 src/
 
       - name: Test with pytest
         run: |

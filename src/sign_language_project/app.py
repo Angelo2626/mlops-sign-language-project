@@ -7,7 +7,6 @@ import argparse  # Import per gli argomenti da riga di comando
 import torch
 import gradio as gr
 from PIL import Image
-import numpy as np
 
 # Importiamo i moduli dal nostro progetto
 from .model import SimpleCNN
